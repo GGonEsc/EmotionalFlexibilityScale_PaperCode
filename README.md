@@ -1,6 +1,8 @@
 # EmotionalFlexibilityScale_PaperCode
 This repository includes the scripts used for replicate the results of the publication of the German version of the FREE_scale (under revision), evaluating the relationship between suppress and enhance emotions expression abilities with traits of mental health and well-being.
 
+Copyright (C) 2020, Contributor: Gabriel Gonzalez-Escamilla
+
 The code was written mostly in Matlab (see geg_flexStats.m; dependencies are included in the extrafunctions folder). 
 The confirmatory factor analysis (CFA) was perform in R. There is also code for chrombach's alpha in R. For personal (software usage) resons the Chrombach's alpha dor the FREE-scale was computed in R but then confirmed and perform for the rest of the questionnaires in Matlab.
 
