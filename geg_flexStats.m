@@ -1,14 +1,13 @@
 function geg_flexStats()
 % This function computes:
 % 1) Internal reliability (Chrombach's alpha) for all tests
-% 2) Principal component analysis (PCA) on FREE items
-% 3) Associations (LASSO + Correlation)
-% 4) GLM interaction
+% 2) Associations (LASSO + Correlation)
+% 3) GLM interaction
 % 
 % For correlation analyses are several options, but rank partial
 % correlations were used fo the manuscript
 % 
-% Author: Gabriel Gonzalez-Escamilla $ 28.08.2019_13:57
+% Author: Gabriel Gonzalez-Escamilla $ 28.08.2019_13:57, last version 12.05.2020_09:41
 % 
 
 plotRegInteraction = true;%false;%
