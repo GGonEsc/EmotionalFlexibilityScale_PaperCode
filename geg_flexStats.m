@@ -11,7 +11,6 @@ function geg_flexStats()
 % Author: Gabriel Gonzalez-Escamilla $ 28.08.2019_13:57
 % 
 
-plotPCA = true;%false;
 plotRegInteraction = true;%false;%
 plotLasso = true;%false;
 
@@ -65,9 +64,9 @@ nWHO5 = txtInd(:,48:52);
 
 % DASS
 DASSd = numInd(:,53:73); nDASS = txtInd(:,53:73);
-% Zur Skala D (Depression) gehören die Items 3, 5, 10, 13, 16, 17, 21.
-% Die Skala A (Angst) enthält die Fragen 2, 4, 7, 9, 15, 19, 20.
-% Zur Skala S (Stress) zählen die Items 1, 6, 8, 11, 12, 14, 18.
+% Zur Skala D (Depression) gehÃ¶ren die Items 3, 5, 10, 13, 16, 17, 21.
+% Die Skala A (Angst) enthÃ¤lt die Fragen 2, 4, 7, 9, 15, 19, 20.
+% Zur Skala S (Stress) zÃ¤hlen die Items 1, 6, 8, 11, 12, 14, 18.
 DASSD = DASSd(:,[3, 5, 10, 13, 16, 17, 21]);
 DASSa = DASSd(:,[2, 4, 7, 9, 15, 19, 20]);
 DASSs = DASSd(:,[1, 6, 8, 11, 12, 14, 18]);
@@ -80,7 +79,7 @@ BFId = numInd(:,74:83); nBFI = txtInd(:,74:83);
 % Neurotizismus wird durch die Items 4R und 9 erfasst,
 % Extraversion durch die Items 1 und 6,
 % Offenheit durch die Items 5 und 10,
-% Verträglichkeit durch die Items 2 und 7R und
+% VertrÃ¤glichkeit durch die Items 2 und 7R und
 % Gewissenhaftigkeit durch die Items 3R und 8.
 % R = negativ gepolte Item rekodiert (Items are reversed-scored = 1, 3, 4, 5 und 7)
 BFIn = BFId(:,[4, 9]); 
@@ -107,11 +106,11 @@ coFlexAd = coFlexd(:,[1, 3, 4, 5, 10]);
 SEKd = numInd(:,94:120); nSEK = txtInd(:,94:120);
 % 1.Aufmerksamkeit: Items 1, 12, 19
 % 2.Klarheit: Items 6,13, 25
-% 3.Körperwahrnehmung: Items 7, 14, 24
+% 3.KÃ¶rperwahrnehmung: Items 7, 14, 24
 % 4.Verstehen: Items 3, 11, 20
 % 5.Akzeptanz: Items 5, 17, 23
 % 6.Resilienz: Items 4, 18, 26
-% 7.Selbstunterstützung: Items 9, 15, 27
+% 7.SelbstunterstÃ¼tzung: Items 9, 15, 27
 % 8.Konfrontationsbereitschaft: Items 8, 16, 22
 % 9.Regulation: Items 2, 10, 21
 % 10. ALL
@@ -138,7 +137,7 @@ SEKrg = SEKd(:,[2, 10, 21]);
 % ERQ
 ERQd = numInd(:,121:130); nERQ = txtInd(:,121:130);
 % 1.Neubewertung (k = 6): Items 1, 3, 5, 7, 8, 10; 
-% 2.Unterdrückung / Suppression (k = 4): Items 2, 4, 6, 9; 
+% 2.UnterdrÃ¼ckung / Suppression (k = 4): Items 2, 4, 6, 9; 
 ERQn = ERQd(:,[1, 3, 5, 7, 8, 10]);
 ERQu = ERQd(:,[2, 4, 6, 9]);
 [stand_alphaERQr,raw_alphaERQr] = CronbachAlpha(ERQn);% Reappraisal
@@ -150,49 +149,7 @@ nSWE = txtInd(:,131:140);
 
 % % The raw_alpha* were simply copied
 
-
-
-
-fprintf('Computing PCA ... \n')
-% % Principal component analysis of FREE data
-% PCA requires each column to be centered (i.e. have zero mean) in order
-% for the algorithm to find a correct first principal component.
-zFREEind = zscore(FREEind);% Centering data:
-[coeff,score,latent,tsquared,explained,~] = pca(zFREEind);% use centered variables
-% [coeff,score,latent,tsquared,explained,mu] = pca(FREEind);% use raw variables
-% OUTPUTS:
-% coeff, the principal component coefficients, also known as loadings
-% score, the principal component scores (are the representations of X in the principal component space)
-% latent, the principal component variances (i.e. eigenvalues of the covariance matrix of X)
-% tsquared, the Hotelling's T-squared statistic for each observation in X
-% explained, the percentage of the total variance explained by each principal component
-% mu, the estimated mean of each variable in X
-% 
-% % Component selection criterion = Empirical Kaiser criterion
-% Braeken, J., & van Assen, M. A. L. M. (2017). An empirical Kaiser
-% criterion. Psychological Methods, 22(3), 450–466. https://doi.org/10.1037/met0000074
-J = length(latent);% total number of items
-gamma = J/length(tsquared);% determine gamma = ratio of number of variables(J) and sample size (n)
-lup = (1+sqrt(gamma))^2;% expected first sample eigenvalue under the null model
-V = cumsum(latent);% Define cumulatively summed eigenvalue vector  
-V = [0; V(1:end-1)];% Omit last element and put a zero upfront
-W = J:-1:1;% Define reflected eigenvalue order vector
-RefEV = max(((J-V)./W).*lup)';% Set vector of reference eigenvalues
-% Choose the number of factors K for which the 1st to Kth observed eigenvalue is higher than theircorresponding reference eigenvalue
-Comps2 = find(latent>RefEV); % results in 2 components to use
-RefV = RefEV; RefV(latent<1) = 1; % Reference vector for plot (as the main model under the assumption that theeigen values should be greater than 1)
-fprintf('components to preserve: N = %s \n', num2str(numel(Comps2)))
-% 
-if plotPCA
-    % Plots (some used for the publication)
-    figure; xlabel('Principal component'); ylabel('Component eigenvalue'); hold on; plot((1:J),latent,'-ok','LineWidth',2); plot((1:J),RefV,'*-r','LineWidth',2); legend('component eigenvalue','reference value'); hold off;
-    figure; bar(explained); xlabel('Principal component'); ylabel('% Variance explained'); hold on; plot((1:J),explained,'-ob','LineWidth',2); grid on; hold off;% all
-    figure; biplot(coeff(:,Comps2),'scores',score(:,Comps2),'varlabels',{'v1','v2','v3','v4','v5','v6','v7','v8','v9','v10','v11','v12','v13','v14','v15','v16'});
-    % All variables are represented in this biplot by a vector, and the direction and length of the vector indicate how each variable contributes to the two principal components in the plot.
-    close all
-end
-
-
+% % % % % % % %  
 % Get summary score index data
 % FREE-scale
 FREE_PE = numSC(:,11);
@@ -239,7 +196,6 @@ ERQsup = numSC(:,48); nERQsup = txtSC(1,48);
 SWE = numSC(:,49); nSWE = txtSC(1,49);
 
 
-% % % % % % % %  
 fprintf('Modelling associations ... \n')
 % associations between FREE and oher variables
 indV = [FREE_enhanceSC,FREE_supressSC,FREE_flexSC];
@@ -359,10 +315,8 @@ for i = 1:size(indV,2)
     fprintf('\n')
 end
 warning on
-%}
 
 fprintf('Modelling GLM interactions ... \n')
-% {
 % % The flexiblity concept proposes that the measures will show stronger
 % relationship to adjustment when moderated by adversity/stress.
 % Therefore, as suggested by George Bonanno, now we test two things:
@@ -399,9 +353,5 @@ for i = 1:3
     end
 end
 
-
-
 clear all
 disp('FINISHED')
-
-
